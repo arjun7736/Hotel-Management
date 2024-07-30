@@ -27,13 +27,17 @@ export class ProductsRepository implements IProductsRepository {
     const products = await ProductDB.find({ shop: id });
     if (!products) throw new Error("Products not found");
     return products.map((product) => {
+      if (!(product._id instanceof mongoose.Types.ObjectId)) {
+        throw new Error("Invalid ID type");
+      }
       return new Products(
         product.name,
         product.image,
         product.category,
         product.price,
         product.quantity,
-        product.shop
+        product.shop,
+        product._id
       );
     });
   }
@@ -42,26 +46,34 @@ export class ProductsRepository implements IProductsRepository {
     const products = await ProductDB.find({ name });
     if (!products) throw new Error("Products not found");
     return products.map((product) => {
+      if (!(product._id instanceof mongoose.Types.ObjectId)) {
+        throw new Error("Invalid ID type");
+      }
       return new Products(
         product.name,
         product.image,
         product.category,
         product.price,
         product.quantity,
-        product.shop
+        product.shop,
+        product._id 
       );
     });
   }
   async findByIdProduct(id: string): Promise<Products> {
     const product = await ProductDB.findById(id);
     if (!product) throw new Error("Product not found");
+    if (!(product._id instanceof mongoose.Types.ObjectId)) {
+      throw new Error("Invalid ID type");
+    }
     return new Products(
       product.name,
       product.image,
       product.category,
       product.price,
       product.quantity,
-      product.shop
+      product.shop,
+      product._id 
     );
   }
   async deleteProduct(id: string): Promise<void> {
@@ -82,13 +94,17 @@ export class ProductsRepository implements IProductsRepository {
       { new: true }
     );
     if (!updatedProduct) throw new Error("Error While update");
+    if (!(updatedProduct._id instanceof mongoose.Types.ObjectId)) {
+      throw new Error("Invalid ID type");
+    }
     return new Products(
       updatedProduct.name,
       updatedProduct.image,
       updatedProduct.category,
       updatedProduct.price,
       updatedProduct.quantity,
-      updatedProduct.shop
+      updatedProduct.shop,
+      updatedProduct._id 
     );
   }
 }

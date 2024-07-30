@@ -4,6 +4,8 @@ import connectDB  from "./infrastructure/database/db"
 import morgan from "morgan"
 dotenv.config();
 import productRoute from "./interfaces/routes/productRoutes"
+import authRoute from "./interfaces/routes/authRoutes"
+
 
 const app = express();
 const port:string|undefined = process.env.PORT
@@ -12,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use("/api/products",productRoute)
-
+app.use("/api/auth",authRoute)
 
 app.use(morgan("dev"));
 

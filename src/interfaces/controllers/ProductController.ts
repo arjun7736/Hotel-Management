@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { AddProduct } from "../../application/usecases/AddProduct";
-import { listProduct } from "../../application/usecases/ListProducts";
+import { AddProduct } from "../../application/usecases/productUsecases/AddProduct";
+import { listProduct } from "../../application/usecases/productUsecases/ListProducts";
 import { Products } from "../../domain/entities";
 
 export class ProductController {

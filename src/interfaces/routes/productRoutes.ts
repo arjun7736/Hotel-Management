@@ -1,8 +1,8 @@
 import {Router} from "express"
 import { ProductController } from "../controllers/ProductController"
 import { ProductsRepository } from "../../infrastructure/data/repositories/ProductRepositiry"
-import { AddProduct } from "../../application/usecases/AddProduct"
-import { listProduct } from "../../application/usecases/ListProducts"
+import { AddProduct } from "../../application/usecases/productUsecases/AddProduct";
+import { listProduct } from "../../application/usecases/productUsecases/ListProducts";
 
 const productsRepository = new ProductsRepository()
 const addProduct = new AddProduct(productsRepository)

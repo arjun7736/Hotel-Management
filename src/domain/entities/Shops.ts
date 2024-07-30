@@ -11,6 +11,6 @@ export class Shops{
             longitude:number
         }],
         public phone:number, 
-        public _id:mongoose.Types.ObjectId,
+        public _id?:mongoose.Types.ObjectId,
     ){}
 }
