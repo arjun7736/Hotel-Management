@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AddProduct } from "../../application/usecases/productUsecases/AddProduct";
 import { listProduct } from "../../application/usecases/productUsecases/ListProducts";
 import { Products } from "../../domain/entities";
@@ -9,7 +9,7 @@ export class ProductController {
     private listproduct: listProduct
   ) {}
 
-  async createProduct(req: Request, res: Response) {
+  async createProduct(req: Request, res: Response,next:NextFunction) {
     try {
       const { name, image, category, price, quantity, shop } = req.body;
       const newproduct = new Products(
@@ -23,23 +23,17 @@ export class ProductController {
       const product = await this.addProduct.execute(newproduct);
       return res.json(product);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(500).json({ error: "An unexpected error occurred" });
+      next(error)
     }
   }
 
-  async listProduct(req: Request, res: Response) {
+  async listProduct(req: Request, res: Response,next:NextFunction) {
     try {
       const { id } = req.params;
       const products = await this.listproduct.exicute(id);
       return res.json(products);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(500).json({ error: "An unexpected error occurred" });
+      next(error)
     }
   }
 }

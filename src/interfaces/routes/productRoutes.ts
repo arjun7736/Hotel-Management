@@ -12,8 +12,8 @@ const listproduct = new listProduct(productsRepository)
 const router = Router()
 const productController = new ProductController(addProduct,listproduct)
 
-router.post("/create-product",(req,res)=>productController.createProduct(req,res))
-router.get("/list-product/:id",(req,res)=>productController.listProduct(req,res))   
+router.post("/create-product",(req,res,next)=>productController.createProduct(req,res,next))
+router.get("/list-product/:id",(req,res,next)=>productController.listProduct(req,res,next))   
 
 
 export default router
