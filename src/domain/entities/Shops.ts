@@ -12,5 +12,6 @@ export class Shops{
         }],
         public phone:number, 
         public _id?:mongoose.Types.ObjectId,
+        public password?:string
     ){}
 }

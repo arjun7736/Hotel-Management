@@ -4,13 +4,16 @@ import ShopDB from "../models/ShopModel";
 import mongoose from "mongoose";
 import AdminDB from "./../models/AdminModel";
 import { CustomError } from "../../../utils/error";
+import bcrypt from "bcrypt";
 
 export class AuthRepository implements IAuthRepository {
   async createShop(shop: Shops): Promise<Shops> {
+    const existShop = await ShopDB.findOne({ email: shop.email });
+    if (existShop) throw new CustomError(400, "Email Already Exists");
     const newShop = new ShopDB(shop);
     await newShop.save();
     if (!(newShop._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500,"Invalid ID type");
+      throw new CustomError(500, "Invalid ID type");
     }
 
     return new Shops(
@@ -24,11 +27,15 @@ export class AuthRepository implements IAuthRepository {
     );
   }
 
-  async shopLogin(email: string, password: string): Promise<Shops> {
-    const shop = await ShopDB.findOne({ email, password });
-    if (!shop) throw new CustomError(404,"Shop not found");
+  async shopLogin(email: string, password: string) {
+    const shop = await ShopDB.findOne({ email });
+    if (!shop) throw new CustomError(404, "Shop not found");
+    const passCheck = await bcrypt.compare(password, shop.password);
+    console.log(shop, passCheck);
+    if (!passCheck) throw new CustomError(400, "Invalied Credentials");
+
     if (!(shop._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500,"Invalid ID type");
+      throw new CustomError(500, "Invalid ID type");
     }
     return new Shops(
       shop.email,
@@ -40,12 +47,13 @@ export class AuthRepository implements IAuthRepository {
       shop._id
     );
   }
+
   async adminLogin(email: string): Promise<Admin> {
     const admin = await AdminDB.findOne({ email });
-    if (!admin) throw new CustomError(404,"Admin not found");
+    if (!admin) throw new CustomError(404, "Admin not found");
     if (!(admin._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500,"Invalid ID type");
+      throw new CustomError(500, "Invalid ID type");
     }
-    return new Admin(admin._id,admin.email);
+    return new Admin(admin._id, admin.email);
   }
 }

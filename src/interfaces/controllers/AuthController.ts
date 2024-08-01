@@ -2,9 +2,15 @@ import { NextFunction, Request, Response } from "express";
 import { AdminLogin } from "../../application/usecases/authUsecases/AdminLogin";
 import { generateToken } from "../../utils/jwt";
 import { ShopLogin } from "../../application/usecases/authUsecases/ShopLogin";
+import { ShopSignup } from "../../application/usecases/authUsecases/ShopSignup";
+import { CustomError } from "../../utils/error";
 
 export class AuthController {
-  constructor(private adminLogin: AdminLogin, private shopLogin: ShopLogin) {}
+  constructor(
+    private adminLogin: AdminLogin,
+    private shopLogin: ShopLogin,
+    private shopCreate: ShopSignup
+  ) {}
 
   async adminSignin(req: Request, res: Response, next: NextFunction) {
     try {
@@ -31,6 +37,32 @@ export class AuthController {
         });
         return res.json(shop);
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async shopSignup(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {
+        email,
+        name,
+        location: { latitude, longitude },
+        phone,
+        password,
+        confirmPassword,
+      } = req.body;
+      if (!latitude||!longitude) throw new CustomError(400, "Location is missing");
+      await this.shopCreate.shopSignup(
+        email,
+        name,
+        latitude,
+        longitude,
+        phone,
+        password,
+        confirmPassword
+      );
+      res.json({ message: "SignUp SuccessFull" });
     } catch (error) {
       next(error);
     }

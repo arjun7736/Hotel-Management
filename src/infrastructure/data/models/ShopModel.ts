@@ -10,6 +10,7 @@ export interface IShop extends Document{
        longitude:number
    }],
    phone:number;
+   password:string;
 }
 
 const ShopSchema:Schema=new Schema({
@@ -38,6 +39,10 @@ const ShopSchema:Schema=new Schema({
        type: Number,
        required: true,
    },
+   password:{
+    type:String,
+    required:true
+   }
 })
 
 export default mongoose.model<IShop>("Shops", ShopSchema);

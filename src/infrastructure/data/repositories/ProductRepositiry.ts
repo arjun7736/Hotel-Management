@@ -6,11 +6,13 @@ import { CustomError } from "../../../utils/error";
 
 export class ProductsRepository implements IProductsRepository {
   async createProduct(product: Products): Promise<Products> {
+    const existProduct = await ProductDB.find({ name:product.name,shop:product.shop });
+    if (existProduct) throw new CustomError(400, "Product Already Exist");
     const newProduct = new ProductDB(product);
     await newProduct.save();
 
     if (!(newProduct._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500,"Invalid ID type");
+      throw new CustomError(500, "Invalid ID type");
     }
 
     return new Products(
@@ -26,10 +28,10 @@ export class ProductsRepository implements IProductsRepository {
 
   async listProduct(id: string): Promise<Products[]> {
     const products = await ProductDB.find({ shop: id });
-    if (!products) throw new CustomError(404,"Products not found");
+    if (!products) throw new CustomError(404, "Products not found");
     return products.map((product) => {
       if (!(product._id instanceof mongoose.Types.ObjectId)) {
-        throw new CustomError(500,"Invalid ID type");
+        throw new CustomError(500, "Invalid ID type");
       }
       return new Products(
         product.name,
@@ -45,10 +47,10 @@ export class ProductsRepository implements IProductsRepository {
 
   async findByNameProduct(name: string): Promise<Products[]> {
     const products = await ProductDB.find({ name });
-    if (!products) throw new CustomError(404,"Products not found");
+    if (!products) throw new CustomError(404, "Products not found");
     return products.map((product) => {
       if (!(product._id instanceof mongoose.Types.ObjectId)) {
-        throw new CustomError(500,"Invalid ID type");
+        throw new CustomError(500, "Invalid ID type");
       }
       return new Products(
         product.name,
@@ -57,15 +59,16 @@ export class ProductsRepository implements IProductsRepository {
         product.price,
         product.quantity,
         product.shop,
-        product._id 
+        product._id
       );
     });
   }
+
   async findByIdProduct(id: string): Promise<Products> {
     const product = await ProductDB.findById(id);
-    if (!product) throw new CustomError(404,"Product not found");
+    if (!product) throw new CustomError(404, "Product not found");
     if (!(product._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500,"Invalid ID type");
+      throw new CustomError(500, "Invalid ID type");
     }
     return new Products(
       product.name,
@@ -74,13 +77,15 @@ export class ProductsRepository implements IProductsRepository {
       product.price,
       product.quantity,
       product.shop,
-      product._id 
+      product._id
     );
   }
+
   async deleteProduct(id: string): Promise<void> {
     const product = await ProductDB.findByIdAndDelete(id);
-    if (!product) throw new CustomError(404,"Product not found");
+    if (!product) throw new CustomError(404, "Product not found");
   }
+  
   async updateProduct(product: Products): Promise<Products> {
     const updatedProduct = await ProductDB.findByIdAndUpdate(
       product._id,
@@ -94,9 +99,9 @@ export class ProductsRepository implements IProductsRepository {
       },
       { new: true }
     );
-    if (!updatedProduct) throw new CustomError(500,"Error While update");
+    if (!updatedProduct) throw new CustomError(500, "Error While update");
     if (!(updatedProduct._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500,"Invalid ID type");
+      throw new CustomError(500, "Invalid ID type");
     }
     return new Products(
       updatedProduct.name,
@@ -105,7 +110,7 @@ export class ProductsRepository implements IProductsRepository {
       updatedProduct.price,
       updatedProduct.quantity,
       updatedProduct.shop,
-      updatedProduct._id 
+      updatedProduct._id
     );
   }
 }
