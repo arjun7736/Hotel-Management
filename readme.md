@@ -1,40 +1,107 @@
-api Docs
+> # API DOCS HOTEL-MANAGEMENT
 
-1.Authentication APIs
-1./api/auth/admin-login
-{
-    input:{email},
-    output:{token,adminData}
-}
-2./api/auth/logout
-{
-    output:{logout message}
-}
-3./api/auth/shop-signup
-{
-    input:{name,email,password,latitude,longitude,phone,password,confirmPassword},
-    output:{token,shopData}
- 
-}
-4./api/auth/shop-login
-{
-    input:{email,password},
-    output:{token,shopData}
-}
+### 1.Authentication APIs
 
-2.Product APIs
-1./api/products/create-product
+------------
+
+
+> ##### 1./api/auth/admin-login -POST
+###### input
+```json
 {
-    input:{name,description,price,category,image,quantity,shop},
-    output:{productData}
+    email
 }
-2./api/products/list-product/:id
+```
+output
+```json
 {
-    input:{id},
-    output:{productData[]}
+    token,adminData
 }
-3./api/products/delete-product/:id
+```
+------------
+
+
+> ##### 2./api/auth/logout - GET
+###### input
+```json
+{}
+```
+output
+```json
 {
-    input:{id},
-    output:{deleted message}
+    Logout Message
 }
+```
+------------
+>##### 3./api/auth/shop-signup -POST
+###### input
+```json
+{
+name,email,password,latitude,longitude,phone,password,confirmPassword
+}
+```
+output
+```json
+{
+   SIgnup Success Message
+}
+```
+------------
+>##### 4./api/auth/shop-login -POST
+###### input
+```json
+{
+email,password
+}
+```
+output
+```json
+{
+token,shopData
+}
+```
+------------
+###2.Product APIs
+>#####1./api/products/create-product -POST
+###### input
+```json
+{
+name,description,price,category,image,quantity,shop
+}
+```
+output
+```json
+{
+productData
+}
+```
+------------
+>#####2./api/products/list-product/:id
+###### input
+```json
+{
+shop : id
+}
+```
+output
+```json
+{
+productData[]
+}
+```
+------------
+
+>#####3./api/products/delete-product/:id
+###### input
+```json
+{
+id
+}
+```
+output
+```json
+{
+Deleted Message
+}
+```
+------------
