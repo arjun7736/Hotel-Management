@@ -5,8 +5,9 @@ import ProductDB from "../models/ProductModel";
 import { CustomError } from "../../../utils/error";
 
 export class ProductsRepository implements IProductsRepository {
+  
   async createProduct(product: Products): Promise<Products> {
-    const existProduct = await ProductDB.find({ name:product.name,shop:product.shop });
+    const existProduct = await ProductDB.findOne({ name:product.name,shop:product.shop });
     if (existProduct) throw new CustomError(400, "Product Already Exist");
     const newProduct = new ProductDB(product);
     await newProduct.save();
