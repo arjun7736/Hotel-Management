@@ -61,8 +61,8 @@ token,shopData
 }
 ```
 ------------
-###2.Product APIs
->#####1./api/products/create-product -POST
+### 2.Product APIs
+>##### 1./api/products/create-product -POST
 ###### input
 ```json
 {
@@ -76,7 +76,7 @@ productData
 }
 ```
 ------------
->#####2./api/products/list-product/:id
+>##### 2./api/products/list-product/:id
 ###### input
 ```json
 {
@@ -91,7 +91,7 @@ productData[]
 ```
 ------------
 
->#####3./api/products/delete-product/:id
+>##### 3./api/products/delete-product/:id
 ###### input
 ```json
 {
