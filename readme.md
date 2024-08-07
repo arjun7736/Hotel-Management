@@ -21,7 +21,7 @@ output
 ------------
 
 
-> ##### 2./api/auth/logout - GET
+> ##### 2./api/auth/logout - POST
 ###### input
 ```json
 {}
