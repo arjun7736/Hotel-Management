@@ -5,8 +5,10 @@ import morgan from "morgan"
 dotenv.config();
 import productRoute from "./interfaces/routes/productRoutes"
 import authRoute from "./interfaces/routes/authRoutes"
+import categoryRoute from "./interfaces/routes/categoryRoute"
 import cors from "cors"
 import errorMiddleware from './middleware/errorMiddleware';
+import cookieParser from "cookie-parser"
 
 const app = express();
 const port:string|undefined = process.env.PORT
@@ -18,7 +20,7 @@ const corsOptions = {
     credentials: true 
   };
   
-
+  app.use(cookieParser());
 app.use(cors(corsOptions))
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -27,6 +29,7 @@ app.use(morgan("dev"));
 
 app.use("/api/products",productRoute)
 app.use("/api/auth",authRoute)
+app.use("/api/category",categoryRoute)
 app.use(errorMiddleware)
 
 

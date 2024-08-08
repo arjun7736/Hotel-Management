@@ -9,6 +9,14 @@ export class ShopLogin{
         if(!email || !password) throw new CustomError(400,"Email and Password is Required")
         const shop = await this.shopRepository.shopLogin(email,password)
         if(!shop) throw new CustomError(404,"You Dont have an Accound Create One")
-        return shop;
+        return new Shops(
+    shop.email,
+    shop.imageLogo,
+    shop.banner,
+    shop.name,
+    shop.location,
+    shop.phone,
+    shop._id
+    );
     }
 }

@@ -52,7 +52,8 @@ export class AuthController {
         password,
         confirmPassword,
       } = req.body;
-      if (!latitude||!longitude) throw new CustomError(400, "Location is missing");
+      if (!latitude || !longitude)
+        throw new CustomError(400, "Location is missing");
       await this.shopCreate.shopSignup(
         email,
         name,
@@ -63,6 +64,15 @@ export class AuthController {
         confirmPassword
       );
       res.json({ message: "SignUp SuccessFull" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async logOut(req: Request, res: Response, next: NextFunction) {
+    try {
+      res.clearCookie("token");
+      res.status(200).json({ message: "Logout Successfully" });
     } catch (error) {
       next(error);
     }

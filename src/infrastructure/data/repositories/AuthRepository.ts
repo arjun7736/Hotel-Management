@@ -31,7 +31,6 @@ export class AuthRepository implements IAuthRepository {
     const shop = await ShopDB.findOne({ email });
     if (!shop) throw new CustomError(404, "Shop not found");
     const passCheck = await bcrypt.compare(password, shop.password);
-    console.log(shop, passCheck);
     if (!passCheck) throw new CustomError(400, "Invalied Credentials");
 
     if (!(shop._id instanceof mongoose.Types.ObjectId)) {
