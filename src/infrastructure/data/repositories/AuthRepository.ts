@@ -55,4 +55,17 @@ export class AuthRepository implements IAuthRepository {
     }
     return new Admin(admin._id, admin.email);
   }
-}
+
+async getShopData(id: string): Promise<Shops> {
+  const data = await ShopDB.findById(id);
+  if (!data) throw new CustomError(404, "Shop not found");
+  return new Shops(
+    data.email,
+    data.imageLogo,
+    data.banner,
+    data.name,
+    data.location,
+    data.phone,
+    data._id as mongoose.Types.ObjectId
+  );
+}}

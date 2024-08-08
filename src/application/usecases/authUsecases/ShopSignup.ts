@@ -1,3 +1,4 @@
+import { Shops } from "../../../domain/entities";
 import { IAuthRepository } from "../../../domain/interfaces/IAuthRepository";
 import { CustomError } from "../../../utils/error";
 import bcrypt from "bcrypt";
@@ -63,5 +64,9 @@ export class ShopSignup {
       banner: "",
     });
     return "Shop Created Successfully";
+  }
+  async getData(id:string):Promise<Shops>{
+    const data =await this.shopRepository.getShopData(id)
+    return data
   }
 }
