@@ -14,7 +14,7 @@ const app = express();
 const port:string|undefined = process.env.PORT
 connectDB();
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000','https://hotler.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true 
