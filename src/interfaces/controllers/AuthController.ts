@@ -18,11 +18,8 @@ export class AuthController {
     try {
       const { email } = req.body;
       const admin = await this.adminLogin.checkAdmin(email);
-      res.cookie("token", generateToken(admin._id), {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60,
-      });
-      return res.json(admin);
+      const token = await generateToken(admin._id)
+      return res.json({...admin,token});
     } catch (error) {
       next(error);
     }
@@ -33,11 +30,8 @@ export class AuthController {
       const { email, password } = req.body;
       const shop = await this.shopLogin.checkShop(email, password);
       if (shop._id) {
-        res.cookie("token", generateToken(shop._id), {
-          httpOnly: true,
-          maxAge: 1000 * 60 * 60,
-        });
-        return res.json(shop);
+      const token =await generateToken(shop._id)
+        return res.json({...shop,token});
       }
     } catch (error) {
       next(error);
