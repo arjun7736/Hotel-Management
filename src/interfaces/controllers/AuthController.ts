@@ -77,4 +77,13 @@ export class AuthController {
       next(error);
     }
   }
+async getShopData(req:Request,res:Response,next:NextFunction){
+  try {
+   const token =req.cookies["token"] 
+   console.log(token)
+  } catch (error) {
+    next(error)
+  }
+}
+
 }
