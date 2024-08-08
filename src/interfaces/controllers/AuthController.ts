@@ -65,14 +65,6 @@ export class AuthController {
     }
   }
 
-  async logOut(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.clearCookie("token");
-      res.status(200).json({ message: "Logout Successfully" });
-    } catch (error) {
-      next(error);
-    }
-  }
   async getShopData(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.user;

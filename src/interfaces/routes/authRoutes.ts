@@ -16,7 +16,6 @@ const getShopData =new GetShopData(authRepository)
 const authController = new AuthController(adminLogin,shopLogin,shopSignup,getShopData)
 
 router.post("/admin-login",(req,res,next)=>authController.adminSignin(req,res,next))
-router.post("/logout",(req,res,next)=>authController.logOut(req,res,next))
 router.post("/shop-login",(req,res,next)=>authController.shopSignin(req,res,next))
 router.post("/shop-signup",(req,res,next)=>authController.shopSignup(req,res,next))
 router.get("/get-data",verifyToken,(req,res,next)=>authController.getShopData(req,res,next))
