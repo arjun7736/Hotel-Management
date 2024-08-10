@@ -13,13 +13,15 @@ export class ProductController {
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { name, image, category, price, quantity, shop } = req.body;
+      const { name, image, category, price, quantity,quantityType,offerPrice, shop } = req.body;
       const newproduct = new Products(
         name,
         image,
         category,
         price,
+        offerPrice,
         quantity,
+        quantityType,
         shop
       );
       const product = await this.addProduct.execute(newproduct);

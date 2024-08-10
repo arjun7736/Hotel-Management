@@ -21,7 +21,9 @@ export class ProductsRepository implements IProductsRepository {
       newProduct.image,
       newProduct.category,
       newProduct.price,
+      newProduct.offerPrice,
       newProduct.quantity,
+      newProduct.quantityType,
       newProduct.shop,
       newProduct._id
     );
@@ -39,7 +41,9 @@ export class ProductsRepository implements IProductsRepository {
         product.image,
         product.category,
         product.price,
+        product.offerPrice,
         product.quantity,
+        product.quantityType,
         product.shop,
         product._id
       );
@@ -58,7 +62,9 @@ export class ProductsRepository implements IProductsRepository {
         product.image,
         product.category,
         product.price,
+        product.offerPrice,
         product.quantity,
+        product.quantityType,
         product.shop,
         product._id
       );
@@ -76,7 +82,9 @@ export class ProductsRepository implements IProductsRepository {
       product.image,
       product.category,
       product.price,
+      product.offerPrice,
       product.quantity,
+      product.quantityType,
       product.shop,
       product._id
     );
@@ -109,7 +117,9 @@ export class ProductsRepository implements IProductsRepository {
       updatedProduct.image,
       updatedProduct.category,
       updatedProduct.price,
+      updatedProduct.offerPrice,
       updatedProduct.quantity,
+      updatedProduct.quantityType,
       updatedProduct.shop,
       updatedProduct._id
     );

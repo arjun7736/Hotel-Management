@@ -5,7 +5,9 @@ export interface IProduct extends Document{
     image:string;
     category:string;
     price:number;
+    offerPrice:number;
     quantity:number;
+    quantityType:Array<string>;
     shop:string;
 }
 
@@ -25,9 +27,16 @@ const ProductSchema:Schema=new Schema({
         type: Number,
         required: true,
     },
+    offerPrice:{
+        type:Number,
+        default:0
+    },
     quantity: {
         type: Number,
         required: true,
+    },
+    quantityType:{
+        type:Array
     },
     shop: {
         type: mongoose.Types.ObjectId,
