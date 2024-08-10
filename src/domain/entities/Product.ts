@@ -4,7 +4,7 @@ export class Products{
     constructor(
         public name:string,
         public image:string,
-        public category:string,
+        public category:mongoose.Types.ObjectId,
         public price:number,
         public offerPrice:number,
         public quantity:number,

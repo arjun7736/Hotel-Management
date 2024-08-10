@@ -3,12 +3,14 @@ import { AddProduct } from "../../application/usecases/productUsecases/AddProduc
 import { listProduct } from "../../application/usecases/productUsecases/ListProducts";
 import { DeleteProduct } from "../../application/usecases/productUsecases/DeleteProduct";
 import { Products } from "../../domain/entities";
+import { UpdateProduct } from "../../application/usecases/productUsecases/UpdateProduct";
 
 export class ProductController {
   constructor(
     private addProduct: AddProduct,
     private listproduct: listProduct,
-    private deleteProduct: DeleteProduct
+    private deleteProduct: DeleteProduct,
+    private updateProduct:UpdateProduct
   ) {}
 
   async createProduct(req: Request, res: Response, next: NextFunction) {
@@ -48,6 +50,14 @@ export class ProductController {
       return res.json("product deleted");
     } catch (error) {
       next(error);
+    }
+  }
+  async updateNewProduct(req:Request,res:Response,next:NextFunction){
+    try {
+      const updateProduct = await this.updateProduct.execute(req.body)
+      res.json(updateProduct)
+    } catch (error) {
+      next(error)
     }
   }
 }

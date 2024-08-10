@@ -1,3 +1,4 @@
+import { Data } from "../../application/usecases/productUsecases/UpdateProduct";
 import { Products } from "../entities";
 
 export interface IProductsRepository {
@@ -6,5 +7,5 @@ export interface IProductsRepository {
   findByNameProduct(name: string): Promise<Products[]>;
   findByIdProduct(id: string): Promise<Products>;
   deleteProduct(id: string): Promise<void>;
-  updateProduct(product: Products): Promise<Products>;
+  updateProduct(product: Data): Promise<Products>;
 }

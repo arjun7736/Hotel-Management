@@ -3,6 +3,7 @@ import { Products } from "../../../domain/entities";
 import { IProductsRepository } from "../../../domain/interfaces/IProductRepository";
 import ProductDB from "../models/ProductModel";
 import { CustomError } from "../../../utils/error";
+import { Data } from "../../../application/usecases/productUsecases/UpdateProduct";
 
 export class ProductsRepository implements IProductsRepository {
   
@@ -11,10 +12,6 @@ export class ProductsRepository implements IProductsRepository {
     if (existProduct) throw new CustomError(400, "Product Already Exist");
     const newProduct = new ProductDB(product);
     await newProduct.save();
-
-    if (!(newProduct._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
 
     return new Products(
       newProduct.name,
@@ -25,17 +22,14 @@ export class ProductsRepository implements IProductsRepository {
       newProduct.quantity,
       newProduct.quantityType,
       newProduct.shop,
-      newProduct._id
+      newProduct._id as mongoose.Types.ObjectId
     );
   }
 
   async listProduct(id: string): Promise<Products[]> {
-    const products = await ProductDB.find({ shop: id });
+    const products = await ProductDB.find({ shop: id }).populate('category') ;
     if (!products) throw new CustomError(404, "Products not found");
     return products.map((product) => {
-      if (!(product._id instanceof mongoose.Types.ObjectId)) {
-        throw new CustomError(500, "Invalid ID type");
-      }
       return new Products(
         product.name,
         product.image,
@@ -45,7 +39,7 @@ export class ProductsRepository implements IProductsRepository {
         product.quantity,
         product.quantityType,
         product.shop,
-        product._id
+        product._id as mongoose.Types.ObjectId
       );
     });
   }
@@ -54,9 +48,6 @@ export class ProductsRepository implements IProductsRepository {
     const products = await ProductDB.find({ name });
     if (!products) throw new CustomError(404, "Products not found");
     return products.map((product) => {
-      if (!(product._id instanceof mongoose.Types.ObjectId)) {
-        throw new CustomError(500, "Invalid ID type");
-      }
       return new Products(
         product.name,
         product.image,
@@ -66,7 +57,7 @@ export class ProductsRepository implements IProductsRepository {
         product.quantity,
         product.quantityType,
         product.shop,
-        product._id
+        product._id as mongoose.Types.ObjectId
       );
     });
   }
@@ -74,9 +65,6 @@ export class ProductsRepository implements IProductsRepository {
   async findByIdProduct(id: string): Promise<Products> {
     const product = await ProductDB.findById(id);
     if (!product) throw new CustomError(404, "Product not found");
-    if (!(product._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
     return new Products(
       product.name,
       product.image,
@@ -86,7 +74,7 @@ export class ProductsRepository implements IProductsRepository {
       product.quantity,
       product.quantityType,
       product.shop,
-      product._id
+      product._id as mongoose.Types.ObjectId
     );
   }
 
@@ -95,23 +83,13 @@ export class ProductsRepository implements IProductsRepository {
     if (!product) throw new CustomError(404, "Product not found");
   }
   
-  async updateProduct(product: Products): Promise<Products> {
+  async updateProduct(product: Data): Promise<Products> {
     const updatedProduct = await ProductDB.findByIdAndUpdate(
       product._id,
-      {
-        name: product.name,
-        image: product.image,
-        category: product.category,
-        price: product.price,
-        quantity: product.quantity,
-        shop: product.shop,
-      },
+      {$set:product},
       { new: true }
     );
     if (!updatedProduct) throw new CustomError(500, "Error While update");
-    if (!(updatedProduct._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
     return new Products(
       updatedProduct.name,
       updatedProduct.image,
@@ -121,7 +99,7 @@ export class ProductsRepository implements IProductsRepository {
       updatedProduct.quantity,
       updatedProduct.quantityType,
       updatedProduct.shop,
-      updatedProduct._id
+      updatedProduct._id as mongoose.Types.ObjectId
     );
   }
 }
