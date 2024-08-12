@@ -11,7 +11,7 @@ import errorMiddleware from './middleware/errorMiddleware';
 import cookieParser from "cookie-parser"
 
 const app = express();
-const port:string|undefined = process.env.PORT
+const port:string|number = process.env.PORT || 3000
 connectDB();
 const corsOptions = {
     origin: ['http://localhost:3000','https://hotler.vercel.app'],
