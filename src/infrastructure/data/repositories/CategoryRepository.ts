@@ -5,20 +5,17 @@ import { CustomError } from "../../../utils/error";
 import CategoryDB from "../models/CategoryModel";
 
 export class CategoryRepository implements ICategoryRepository {
+
   async createCategory(category: Category): Promise<Category> {
     const isExistingCategory = await CategoryDB.findOne({
-      name: category.name,
+      name: category.name,shop:category.shop
     });
     if (isExistingCategory)
       throw new CustomError(400, "Category Already Exists");
     const newCat = new CategoryDB(category);
     await newCat.save();
 
-    if (!(newCat._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
-
-    return new Category(newCat.name, newCat.image, newCat.shop, newCat._id);
+    return new Category(newCat.name, newCat.image, newCat.shop, newCat._id as mongoose.Types.ObjectId);
   }
 
   async listCategory(id: string): Promise<Category[]> {
@@ -42,28 +39,22 @@ export class CategoryRepository implements ICategoryRepository {
     if (!updatedCategory) {
       throw new CustomError(404, "Category not found");
     }
-    if (!(updatedCategory._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
     return new Category(
       updatedCategory.name,
       updatedCategory.image,
       updatedCategory.shop,
-      updatedCategory._id
+      updatedCategory._id as mongoose.Types.ObjectId
     );
   }
 
   async findByNameCategory(name: string): Promise<Category> {
     const category = await CategoryDB.findOne({ name: name });
     if (!category) throw new CustomError(404, "Category not Found");
-    if (!(category._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
     return new Category(
       category.name,
       category.image,
       category.shop,
-      category._id
+      category._id as mongoose.Types.ObjectId
     );
   }
 }
