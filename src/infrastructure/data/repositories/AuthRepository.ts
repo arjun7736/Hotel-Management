@@ -5,26 +5,15 @@ import mongoose from "mongoose";
 import AdminDB from "./../models/AdminModel";
 import { CustomError } from "../../../utils/error";
 import bcrypt from "bcrypt";
+import OTPDB from "../models/OtpModel";
 
 export class AuthRepository implements IAuthRepository {
-  async createShop(shop: Shops): Promise<Shops> {
+  async createShop(shop: Shops): Promise<string> {
     const existShop = await ShopDB.findOne({ email: shop.email });
     if (existShop) throw new CustomError(400, "Email Already Exists");
-    const newShop = new ShopDB(shop);
+    const newShop = new OTPDB(shop);
     await newShop.save();
-    if (!(newShop._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
-
-    return new Shops(
-      newShop.email,
-      newShop.imageLogo,
-      newShop.banner,
-      newShop.name,
-      newShop.location,
-      newShop.phone,
-      newShop._id
-    );
+    return "OTP sent successfully";
   }
 
   async shopLogin(email: string, password: string) {
@@ -33,9 +22,6 @@ export class AuthRepository implements IAuthRepository {
     const passCheck = await bcrypt.compare(password, shop.password);
     if (!passCheck) throw new CustomError(400, "Invalied Credentials");
 
-    if (!(shop._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
     return new Shops(
       shop.email,
       shop.imageLogo,
@@ -43,29 +29,68 @@ export class AuthRepository implements IAuthRepository {
       shop.name,
       shop.location,
       shop.phone,
-      shop._id
+      shop._id as mongoose.Types.ObjectId
     );
   }
 
   async adminLogin(email: string): Promise<Admin> {
     const admin = await AdminDB.findOne({ email });
     if (!admin) throw new CustomError(404, "Admin not found");
-    if (!(admin._id instanceof mongoose.Types.ObjectId)) {
-      throw new CustomError(500, "Invalid ID type");
-    }
-    return new Admin(admin._id, admin.email);
+    return new Admin(admin._id as mongoose.Types.ObjectId, admin.email);
   }
 
-async getShopData(id: string): Promise<Shops> {
-  const data = await ShopDB.findById(id);
-  if (!data) throw new CustomError(404, "Shop not found");
-  return new Shops(
-    data.email,
-    data.imageLogo,
-    data.banner,
-    data.name,
-    data.location,
-    data.phone,
-    data._id as mongoose.Types.ObjectId
-  );
-}}
+  async getShopData(id: string): Promise<Shops> {
+    const data = await ShopDB.findById(id);
+    if (!data) throw new CustomError(404, "Shop not found");
+    return new Shops(
+      data.email,
+      data.imageLogo,
+      data.banner,
+      data.name,
+      data.location,
+      data.phone,
+      data._id as mongoose.Types.ObjectId
+    );
+  }
+  async verifyOtp(email: string, otp: number): Promise<string> {
+    const data = await OTPDB.findOne({ email });
+    if (!data) throw new CustomError(404, "User not found");
+    if (data.otp !== otp) throw new CustomError(400, "Invalid OTP");
+    await ShopDB.create({
+      email: data.email,
+      imageLogo: data.imageLogo,
+      banner: data.banner,
+      name: data.name,
+      location: data.location,
+      phone: data.phone,
+      password: data.password,
+    });
+    await OTPDB.deleteOne({ email });
+    return "OTP verified";
+  }
+  async forgotPassword(email: string, otp: number): Promise<number> {
+    const shop = await ShopDB.findOne({ email });
+    if (!shop) throw new CustomError(404, "Shop not found");
+    await OTPDB.create({ email, otp });
+    return otp;
+  }
+
+  async verifyForgotPassOtp(email: string, otp: number): Promise<string> {
+    const data = await OTPDB.findOne({ email });
+    if (!data) throw new CustomError(404, "User not found");
+    if (data.otp !== otp) throw new CustomError(400, "Invalid OTP");
+    return "OTP Verified";
+  }
+
+  async resetPassword(email: string, password: string): Promise<string> {
+    const data = await ShopDB.findOneAndUpdate(
+      { email },
+      { $set: { password } },
+      { new: true }
+    );
+    if (data) {
+      return "Password Reset";
+    }
+    throw new CustomError(500, "Error While Updating");
+  }
+}

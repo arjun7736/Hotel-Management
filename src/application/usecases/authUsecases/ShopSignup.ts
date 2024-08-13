@@ -3,6 +3,7 @@ import { IAuthRepository } from "../../../domain/interfaces/IAuthRepository";
 import { CustomError } from "../../../utils/error";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import { sendOtp } from "../../../utils/sentOtp";
 
 export class ShopSignup {
   constructor(private shopRepository: IAuthRepository) {}
@@ -49,7 +50,7 @@ export class ShopSignup {
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    await this.shopRepository.createShop({
+   const data = await this.shopRepository.createShop({
       email,
       name,
       location: [
@@ -63,7 +64,14 @@ export class ShopSignup {
       imageLogo: "",
       banner: "",
     });
-    return "Shop Created Successfully";
+    if(data){
+      const OTP = Math.floor(100000 + Math.random() * 900000);
+      await sendOtp({to:email,otp:OTP})
+      return "Shop Created Successfully";
+    }
+    else {
+      throw new CustomError(500,"can't Create Accound")
+    }
   }
   async getData(id:string):Promise<Shops>{
     const data =await this.shopRepository.getShopData(id)
