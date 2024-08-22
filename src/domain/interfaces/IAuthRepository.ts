@@ -9,4 +9,5 @@ export interface IAuthRepository {
   verifyOtp(email: string, otp: number): Promise<string>;
   verifyForgotPassOtp(email: string, otp: number): Promise<string>;
   resetPassword(email:string,password: string): Promise<string>;
+  changePassword(email:string,existingPassword:string,newPassword:string):Promise<string>
 }

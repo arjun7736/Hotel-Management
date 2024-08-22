@@ -93,4 +93,23 @@ export class AuthRepository implements IAuthRepository {
     }
     throw new CustomError(500, "Error While Updating");
   }
+
+  async changePassword(
+    email: string,
+    existingPassword: string,
+    newPassword: string
+  ): Promise<string> {
+    const data = await ShopDB.findOne({ email: email });
+    if (!data) throw new CustomError(404, "no data Found");
+    const passCheck = await bcrypt.compare(existingPassword, data.password);
+    if (!passCheck)
+      throw new CustomError(400, "It is not the Previous Password");
+    const hPass = await bcrypt.hash(newPassword, 10);
+    const chnage = await ShopDB.findOneAndUpdate(
+      { email: email },
+      { password: hPass }
+    );
+    if (!chnage) throw new CustomError(500, "Error Occured While Updating");
+    return "Password Updated";
+  }
 }

@@ -9,6 +9,7 @@ import { GetShopData } from "../../application/usecases/authUsecases/GetShopData
 import { ForgotPassword } from "../../application/usecases/authUsecases/ForgotPassword";
 import { VerifyOtp } from "../../application/usecases/authUsecases/VerifyOtp";
 import { ResetPassword } from "../../application/usecases/authUsecases/ResetPassword";
+import { ChangePassword } from "../../application/usecases/authUsecases/ChangePassword";
 
 const router = Router();
 const authRepository = new AuthRepository()
@@ -19,7 +20,8 @@ const getShopData =new GetShopData(authRepository)
 const forgotPassword = new ForgotPassword(authRepository)
 const verifyOtp = new VerifyOtp(authRepository)
 const resetPassword =new ResetPassword(authRepository)
-const authController = new AuthController(adminLogin,shopLogin,shopSignup,getShopData,forgotPassword,verifyOtp,resetPassword)
+const changePassword = new ChangePassword(authRepository)
+const authController = new AuthController(adminLogin,shopLogin,shopSignup,getShopData,forgotPassword,verifyOtp,resetPassword,changePassword)
 
 router.post("/admin-login",(req,res,next)=>authController.adminSignin(req,res,next))
 router.post("/shop-login",(req,res,next)=>authController.shopSignin(req,res,next))
@@ -29,4 +31,5 @@ router.post("/verify-otp",(req,res,next)=>authController.verifyOTP(req,res,next)
 router.post("/forgot-password",(req,res,next)=>authController.forgotPasswords(req,res,next))
 router.post("/forgotpassword-verify-otp",(req,res,next)=>authController.forgotPasswordVerifyOTP(req,res,next))
 router.put("/reset-password",(req,res,next)=>authController.resetPassword(req,res,next))
+router.put("/change-password",(req,res,next)=>authController.changePassword(req,res,next))
 export default router

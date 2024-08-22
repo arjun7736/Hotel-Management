@@ -8,6 +8,7 @@ import { GetShopData } from "../../application/usecases/authUsecases/GetShopData
 import { ForgotPassword } from "../../application/usecases/authUsecases/ForgotPassword";
 import { VerifyOtp } from "../../application/usecases/authUsecases/VerifyOtp";
 import { ResetPassword } from "../../application/usecases/authUsecases/ResetPassword";
+import { ChangePassword } from "../../application/usecases/authUsecases/ChangePassword";
 
 export class AuthController {
   constructor(
@@ -17,7 +18,8 @@ export class AuthController {
     private getShop: GetShopData,
     private forgotPassword: ForgotPassword,
     private verifyOtp: VerifyOtp,
-    private resetPass: ResetPassword
+    private resetPass: ResetPassword,
+    private changePass:ChangePassword
   ) {}
 
   async adminSignin(req: Request, res: Response, next: NextFunction) {
@@ -123,6 +125,15 @@ export class AuthController {
       res.json(data);
     } catch (error) {
       next(error);
+    }
+  }
+  async changePassword(req:Request,res:Response,next:NextFunction){
+    try {
+      const {email,existingPassword,newPassword,confirmPassword}=req.body
+      const passChange =await this.changePass.execute(email,existingPassword,newPassword,confirmPassword)
+      res.json(passChange)
+    } catch (error) {
+      next(error)
     }
   }
 }
