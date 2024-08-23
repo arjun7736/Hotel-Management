@@ -13,6 +13,9 @@ export class ResetPassword {
       );
     const hashedPass = await bcrypt.hash(password, 10);
     const data = await this.authRepository.resetPassword(email,hashedPass);
-    return data;
+    if (!data) {
+      throw new CustomError(500, "Error While Updating");
+    }
+    return "Password Reset";
   }
 }

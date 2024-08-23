@@ -4,6 +4,7 @@ import { CustomError } from "../../../utils/error";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import { sendOtp } from "../../../utils/sentOtp";
+import mongoose from "mongoose";
 
 export class ShopSignup {
   constructor(private shopRepository: IAuthRepository) {}
@@ -50,6 +51,9 @@ export class ShopSignup {
 
     const hashedPass = await bcrypt.hash(password, 10);
 
+    const existShop = await this.shopRepository.findShopByEmail(email);
+    if (existShop) throw new CustomError(400, "Email Already Exists");
+
    const data = await this.shopRepository.createShop({
       email,
       name,
@@ -64,6 +68,7 @@ export class ShopSignup {
       imageLogo: "",
       banner: "",
     });
+
     if(data){
       const OTP = Math.floor(100000 + Math.random() * 900000);
       await sendOtp({to:email,otp:OTP})
@@ -73,8 +78,18 @@ export class ShopSignup {
       throw new CustomError(500,"can't Create Accound")
     }
   }
-  async getData(id:string):Promise<Shops>{
-    const data =await this.shopRepository.getShopData(id)
-    return data
+  
+  async getData(id:string):Promise<Shops|null>{
+    const data =await this.shopRepository.findShopById(id)
+    if(!data) throw new CustomError(404,"Shop Not Found")
+    return new Shops(
+      data.email,
+      data.imageLogo,
+      data.banner,
+      data.name,
+      data.location,
+      data.phone,
+      data._id as mongoose.Types.ObjectId
+    );
   }
 }
