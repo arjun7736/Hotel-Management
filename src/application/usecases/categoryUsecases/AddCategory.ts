@@ -9,6 +9,10 @@ export class AddCategory{
         if(!category.name || !category.image || !category.shop){
             throw new CustomError(400,"Please Fill all the fields")
         }
+        
+        const isExistingCategory =await this.categoryRepository.findCategoryBynameAndShop(category.name,category.shop)
+        if(isExistingCategory)  throw new CustomError(400,"Category Already Exists")
+            
         return await this.categoryRepository.createCategory(category)
     }
 }
