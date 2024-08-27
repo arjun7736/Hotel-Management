@@ -9,6 +9,9 @@ export class AddProduct{
         if(!product.name || !product.image || !product.category || !product.price || !product.quantity || !product.shop) {
             throw new CustomError(400,"All fields are required");
         }
+        const existProduct = await this.productsRepository.findProductByNameAndShop(product.name,product.shop)
+        if (existProduct) throw new CustomError(400, "Product Already Exist");
+
         const newProduct = await this.productsRepository.createProduct(product);
         return newProduct;
     }

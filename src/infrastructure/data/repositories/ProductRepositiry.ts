@@ -7,12 +7,14 @@ import { Data } from "../../../application/usecases/productUsecases/UpdateProduc
 
 export class ProductsRepository implements IProductsRepository {
   
+ async findProductByNameAndShop(name: string, shop: string): Promise<Products|null> {
+   return await ProductDB.findOne({ name:name,shop:shop });
+  }
+
+
   async createProduct(product: Products): Promise<Products> {
-    const existProduct = await ProductDB.findOne({ name:product.name,shop:product.shop });
-    if (existProduct) throw new CustomError(400, "Product Already Exist");
     const newProduct = new ProductDB(product);
     await newProduct.save();
-
     return new Products(
       newProduct.name,
       newProduct.image,
@@ -26,9 +28,9 @@ export class ProductsRepository implements IProductsRepository {
     );
   }
 
-  async listProduct(id: string): Promise<Products[]> {
+
+  async listProduct(id: string): Promise<Products[]|null> {
     const products = await ProductDB.find({ shop: id }).populate('category') ;
-    if (!products) throw new CustomError(404, "Products not found");
     return products.map((product) => {
       return new Products(
         product.name,
@@ -44,39 +46,6 @@ export class ProductsRepository implements IProductsRepository {
     });
   }
 
-  async findByNameProduct(name: string): Promise<Products[]> {
-    const products = await ProductDB.find({ name });
-    if (!products) throw new CustomError(404, "Products not found");
-    return products.map((product) => {
-      return new Products(
-        product.name,
-        product.image,
-        product.category,
-        product.price,
-        product.offerPrice,
-        product.quantity,
-        product.quantityType,
-        product.shop,
-        product._id as mongoose.Types.ObjectId
-      );
-    });
-  }
-
-  async findByIdProduct(id: string): Promise<Products> {
-    const product = await ProductDB.findById(id);
-    if (!product) throw new CustomError(404, "Product not found");
-    return new Products(
-      product.name,
-      product.image,
-      product.category,
-      product.price,
-      product.offerPrice,
-      product.quantity,
-      product.quantityType,
-      product.shop,
-      product._id as mongoose.Types.ObjectId
-    );
-  }
 
   async deleteProduct(id: string): Promise<void> {
     const product = await ProductDB.findByIdAndDelete(id);
