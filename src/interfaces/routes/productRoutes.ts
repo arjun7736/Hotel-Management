@@ -16,7 +16,7 @@ const router = Router()
 const productController = new ProductController(addProduct,listproduct,deleteProduct,updateProduct)
 
 router.post("/create-product",verifyToken,(req,res,next)=>productController.createProduct(req,res,next))
-router.get("/list-product/:id",verifyToken,(req,res,next)=>productController.listProduct(req,res,next))   
+router.get("/list-product/:id",(req,res,next)=>productController.listProduct(req,res,next))   
 router.delete("/delete-product/:id",verifyToken,(req,res,next)=>productController.deleteExistingProduct(req,res,next))
 router.put("/update-product",verifyToken,(req,res,next)=>productController.updateNewProduct(req,res,next))
 export default router
